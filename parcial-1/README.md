@@ -11,67 +11,67 @@ elaborado por _Valentina Morales Villada_
 **Versión con Clases + Referencias:**
 
 === RESUMEN DE ESTADÍSTICAS ===
-Crear datos: 4062.49 ms, 395708 KB
-Mostrar resumen: 40603.27 ms, 0 KB
-Análisis longevidad en el país: 1386.81 ms, 0 KB
-Análisis longevidad por cada ciudad: 1270.69 ms, 0 KB
-Análisis patrimonio en el país: 768.22 ms, 0 KB
-Análisis patrimonio por cada ciudad: 1117.32 ms, 0 KB
-Análisis patrimonio por grupo de declaración: 2313.19 ms, 0 KB
-Análisis declarantes: 23569.02 ms, 452 KB
-Análisis ciudades patrimonio: 161.72 ms, 0 KB
-Análisis mayores 60 años: 142.90 ms, 0 KB
-**Total tiempo: 75395.65 ms**
-**Memoria máxima: 395708 KB**
+- Crear datos: 4062.49 ms, 395708 KB
+- Mostrar resumen: 40603.27 ms, 0 KB
+- Análisis longevidad en el país: 1386.81 ms, 0 KB
+- Análisis longevidad por cada ciudad: 1270.69 ms, 0 KB
+- Análisis patrimonio en el país: 768.22 ms, 0 KB
+- Análisis patrimonio por cada ciudad: 1117.32 ms, 0 KB
+- Análisis patrimonio por grupo de declaración: 2313.19 ms, 0 KB
+- Análisis declarantes: 23569.02 ms, 452 KB
+- Análisis ciudades patrimonio: 161.72 ms, 0 KB
+- Análisis mayores 60 años: 142.90 ms, 0 KB
+- **Total tiempo: 75395.65 ms**
+- **Memoria máxima: 395708 KB**
 
 **Versión con Estructuras + Referencias:**
 
 === RESUMEN DE ESTADÍSTICAS ===
-Crear datos: 4245.00 ms, 0 KB
-Mostrar resumen: 42770.00 ms, 0 KB
-Análisis longevidad en el país: 1290.00 ms, 0 KB
-Análisis longevidad por cada ciudad: 2106.00 ms, 0 KB
-Análisis patrimonio en el país: 893.00 ms, 0 KB
-Análisis patrimonio por cada ciudad: 2997.00 ms, 0 KB
-Análisis patrimonio por grupo de declaración: 1537.00 ms, 0 KB
-Análisis declarantes: 26439.00 ms, 0 KB
-Análisis ciudades patrimonio: 638.00 ms, 0 KB
-Análisis mayores 60 años: 381.00 ms, 0 KB
-**Total tiempo: 83296.00 ms**
-**Memoria máxima: 0 KB**
+- Crear datos: 4245.00 ms, 0 KB
+- Mostrar resumen: 42770.00 ms, 0 KB
+- Análisis longevidad en el país: 1290.00 ms, 0 KB
+- Análisis longevidad por cada ciudad: 2106.00 ms, 0 KB
+- Análisis patrimonio en el país: 893.00 ms, 0 KB
+- Análisis patrimonio por cada ciudad: 2997.00 ms, 0 KB
+- Análisis patrimonio por grupo de declaración: 1537.00 ms, 0 KB
+- Análisis declarantes: 26439.00 ms, 0 KB
+- Análisis ciudades patrimonio: 638.00 ms, 0 KB
+- Análisis mayores 60 años: 381.00 ms, 0 KB
+- **Total tiempo: 83296.00 ms**
+- **Memoria máxima: 0 KB**
 
 **Versión con Clases + Valores**
 
 === RESUMEN DE ESTADÍSTICAS ===
-Crear datos: 3326.91 ms, 395700 KB
-Mostrar resumen: 56318.53 ms, 0 KB
-Análisis longevidad en el país: 1235.95 ms, 0 KB
-Análisis longevidad por cada ciudad: 939.98 ms, 0 KB
-Análisis patrimonio en el país: 741.47 ms, 0 KB
-Análisis patrimonio por cada ciudad: 1075.01 ms, 0 KB
-Análisis patrimonio por grupo de declaración: 853.11 ms, 0 KB
-Análisis declarantes: 35075.12 ms, 19544 KB
-Análisis ciudades patrimonio: 471.74 ms, 0 KB
-Análisis mayores 60 años: 479.22 ms, 0 KB
-**Total tiempo: 100517.03 ms**
-**Memoria máxima: 395700 KB**
+- Crear datos: 3326.91 ms, 395700 KB
+- Mostrar resumen: 56318.53 ms, 0 KB
+- Análisis longevidad en el país: 1235.95 ms, 0 KB
+- Análisis longevidad por cada ciudad: 939.98 ms, 0 KB
+- Análisis patrimonio en el país: 741.47 ms, 0 KB
+- Análisis patrimonio por cada ciudad: 1075.01 ms, 0 KB
+- Análisis patrimonio por grupo de declaración: 853.11 ms, 0 KB
+- Análisis declarantes: 35075.12 ms, 19544 KB
+- Análisis ciudades patrimonio: 471.74 ms, 0 KB
+- Análisis mayores 60 años: 479.22 ms, 0 KB
+- **Total tiempo: 100517.03 ms**
+- **Memoria máxima: 395700 KB**
 
 
 **Versión con Estructuras + Valores**
 
 === RESUMEN DE ESTADÍSTICAS ===
-Crear datos: 3995.00 ms, 0 KB
-Mostrar resumen: 57964.00 ms, 0 KB
-Análisis longevidad por país: 1122.00 ms, 0 KB
-Análisis longevidad por cada ciudad: 1476.00 ms, 0 KB
-Análisis patrimonio por país: 728.00 ms, 0 KB
-Análisis patrimonio por cada ciudad: 1325.00 ms, 0 KB
-Análisis patrimonio por grupo de declaración: 1917.00 ms, 0 KB
-Análisis declarantes: 38412.00 ms, 0 KB
-Análisis ciudades patrimonio: 1043.00 ms, 0 KB
-Análisis mayores 60 años: 687.00 ms, 0 KB
-**Total tiempo: 108669.00 ms**
-**Memoria máxima: 0 KB**
+- Crear datos: 3995.00 ms, 0 KB
+- Mostrar resumen: 57964.00 ms, 0 KB
+- Análisis longevidad por país: 1122.00 ms, 0 KB
+- Análisis longevidad por cada ciudad: 1476.00 ms, 0 KB
+- Análisis patrimonio por país: 728.00 ms, 0 KB
+- Análisis patrimonio por cada ciudad: 1325.00 ms, 0 KB
+- Análisis patrimonio por grupo de declaración: 1917.00 ms, 0 KB
+- Análisis declarantes: 38412.00 ms, 0 KB
+- Análisis ciudades patrimonio: 1043.00 ms, 0 KB
+- Análisis mayores 60 años: 687.00 ms, 0 KB
+- **Total tiempo: 108669.00 ms**
+- **Memoria máxima: 0 KB**
 
 ### Métricas adicionales RAM
 
