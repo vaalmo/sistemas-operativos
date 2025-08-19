@@ -77,36 +77,35 @@ Análisis mayores 60 años: 687.00 ms, 0 KB
 
 #### Versión estructuras referencias
 
-![[Pasted image 20250819021111.png]]
+<img width="870" height="645" alt="image" src="https://github.com/user-attachments/assets/1f5c737c-a8cc-48d5-a4aa-833ca1c338ef" />
 listado de objetos de persona
 
-![[Pasted image 20250819021222.png]]
+<img width="863" height="648" alt="image" src="https://github.com/user-attachments/assets/351c4986-6fe1-420c-a7f2-3189042e7dae" />
 listado y cuenta de declarantes de renta
 
 #### Versión Clases Referencias
 
-![[Pasted image 20250819021530.png]]
+<img width="858" height="655" alt="image" src="https://github.com/user-attachments/assets/890f3538-2544-4c02-86a8-f2b193685dff" />
 listado de objetos de persona
 
 
-![[Pasted image 20250819021638.png]]
+<img width="867" height="654" alt="image" src="https://github.com/user-attachments/assets/f91e9fec-8cf2-4c74-ad02-3967f39dace8" />
 listado de declarantes por grupo 
 
 #### Version clases valores
 
-![[Pasted image 20250819031151.png]]
+<img width="856" height="654" alt="image" src="https://github.com/user-attachments/assets/a9fa1075-6c8d-45a3-8308-4f5d1ee0f07e" />
 listado de objetos
 
-
-![[Pasted image 20250819031303.png]]
+<img width="858" height="645" alt="image" src="https://github.com/user-attachments/assets/9a39ad83-db0f-4575-9e79-3d121d97cf49" />
 listado de delcarantes por grupo
 
 #### Version estructuras valores
 
-![[Pasted image 20250819032532.png]]
+<img width="856" height="652" alt="image" src="https://github.com/user-attachments/assets/f5caf94b-5351-49e6-9411-eed1e002f29f" />
 listado objetos de persona
 
-![[Pasted image 20250819032631.png]]
+<img width="868" height="646" alt="image" src="https://github.com/user-attachments/assets/91008199-06a1-4764-86de-bbb5b0fb61e6" />
 listado de declarantes por grupo 
 
 ## Tabla de comparación final
@@ -154,3 +153,9 @@ En este caso es mejor el vector de clases + referencias, ya que es casi un 68% m
 #### 4. Escalabilidad con memoria virtual:
 
 Con 2 millones de registros ya sentía que empezaba a poner un poco de problema, para mayor cantidad de datos como 10 millones, usaría procesamiento por lotes o memory mapping. El mmap es transparente, y el sistema operativo se encarga de manejar todo, mientras que en el procesamiento por lotes, se tiene control total y puede ser más predecible.
+
+
+----
+
+Link del video 
+
