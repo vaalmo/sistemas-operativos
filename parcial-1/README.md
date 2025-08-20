@@ -100,7 +100,7 @@ Memoria máxima: 0 KB
 | **Análisis ciudades**                        | **136 ms**           | **632 ms**            | **596 ms**       | **1,809 ms**      | **+339% / +186%** |
 | **Análisis mayores 60**                      | **159 ms**           | **378 ms**            | **650 ms**       | **1,132 ms**      | **+309% / +199%** |
 | **Tiempo total**                             | **65,318 ms**        | **65,676 ms**         | **73,081 ms**    | **77,286 ms**     | **+12% / +18%**   |
-| **Memoria máxima**                           | **395,568 KB**       | **0 KB***             | **395,712 KB**   | **0 KB***         |                   |
+| **Memoria máxima**                           | **395,568 KB**       | **0 KB**            | **395,712 KB**   | **0 KB**       |                   |
 
 ### Análisis del costo por copia en las funciones objetivo
 
