@@ -19,39 +19,27 @@
 #include <string.h>
 #include <math.h>
 
-// QUÉ: Incluir bibliotecas stb para cargar y guardar imágenes PNG.
-// CÓMO: stb_image.h lee PNG/JPG a memoria; stb_image_write.h escribe PNG.
-// POR QUÉ: Son bibliotecas de un solo archivo, simples y sin dependencias externas.
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-// QUÉ: Estructura para almacenar la imagen (ancho, alto, canales, píxeles).
-// CÓMO: Usa matriz 3D para píxeles (alto x ancho x canales), donde canales es
-// 1 (grises) o 3 (RGB). Píxeles son unsigned char (0-255).
-// POR QUÉ: Permite manejar tanto grises como color, con memoria dinámica para
-// flexibilidad y evitar desperdicio.
 typedef struct {
-    int ancho;           // Ancho de la imagen en píxeles
-    int alto;            // Alto de la imagen en píxeles
-    int canales;         // 1 (escala de grises) o 3 (RGB)
-    unsigned char*** pixeles; // Matriz 3D: [alto][ancho][canales]
+    int ancho;
+    int alto;
+    int canales;
+    unsigned char*** pixeles;
 } ImagenInfo;
 
-// QUÉ: Liberar memoria asignada para la imagen.
-// CÓMO: Libera cada fila y canal de la matriz 3D, luego el arreglo de filas y
-// reinicia la estructura.
-// POR QUÉ: Evita fugas de memoria, esencial en C para manejar recursos manualmente.
 void liberarImagen(ImagenInfo* info) {
     if (info->pixeles) {
         for (int y = 0; y < info->alto; y++) {
             for (int x = 0; x < info->ancho; x++) {
-                free(info->pixeles[y][x]); // Liberar canales por píxel
+                free(info->pixeles[y][x]);
             }
-            free(info->pixeles[y]); // Liberar fila
+            free(info->pixeles[y]);
         }
-        free(info->pixeles); // Liberar arreglo de filas
+        free(info->pixeles);
         info->pixeles = NULL;
     }
     info->ancho = 0;
@@ -59,26 +47,15 @@ void liberarImagen(ImagenInfo* info) {
     info->canales = 0;
 }
 
-// QUÉ: Cargar una imagen PNG desde un archivo.
-// CÓMO: Usa stbi_load para leer el archivo, detecta canales (1 o 3), y convierte
-// los datos a una matriz 3D (alto x ancho x canales).
-// POR QUÉ: La matriz 3D es intuitiva para principiantes y permite procesar
-// píxeles y canales individualmente.
 int cargarImagen(const char* ruta, ImagenInfo* info) {
     int canales;
-    // QUÉ: Cargar imagen con formato original (0 canales = usar formato nativo).
-    // CÓMO: stbi_load lee el archivo y llena ancho, alto y canales.
-    // POR QUÉ: Respetar el formato original asegura que grises o RGB se mantengan.
     unsigned char* datos = stbi_load(ruta, &info->ancho, &info->alto, &canales, 0);
     if (!datos) {
         fprintf(stderr, "Error al cargar imagen: %s\n", ruta);
         return 0;
     }
-    info->canales = (canales == 1 || canales == 3) ? canales : 1; // Forzar 1 o 3
+    info->canales = (canales == 1 || canales == 3) ? canales : 1;
 
-    // QUÉ: Asignar memoria para matriz 3D.
-    // CÓMO: Asignar alto filas, luego ancho columnas por fila, luego canales por píxel.
-    // POR QUÉ: Estructura clara y flexible para grises (1 canal) o RGB (3 canales).
     info->pixeles = (unsigned char***)malloc(info->alto * sizeof(unsigned char**));
     if (!info->pixeles) {
         fprintf(stderr, "Error de memoria al asignar filas\n");
@@ -101,22 +78,18 @@ int cargarImagen(const char* ruta, ImagenInfo* info) {
                 stbi_image_free(datos);
                 return 0;
             }
-            // Copiar píxeles a matriz 3D
             for (int c = 0; c < info->canales; c++) {
                 info->pixeles[y][x][c] = datos[(y * info->ancho + x) * info->canales + c];
             }
         }
     }
 
-    stbi_image_free(datos); // Liberar buffer de stb
+    stbi_image_free(datos);
     printf("Imagen cargada: %dx%d, %d canales (%s)\n", info->ancho, info->alto,
            info->canales, info->canales == 1 ? "grises" : "RGB");
     return 1;
 }
 
-// QUÉ: Mostrar la matriz de píxeles (primeras 10 filas).
-// CÓMO: Imprime los valores de los píxeles, agrupando canales por píxel (grises o RGB).
-// POR QUÉ: Ayuda a visualizar la matriz para entender la estructura de datos.
 void mostrarMatriz(const ImagenInfo* info) {
     if (!info->pixeles) {
         printf("No hay imagen cargada.\n");
@@ -126,10 +99,10 @@ void mostrarMatriz(const ImagenInfo* info) {
     for (int y = 0; y < info->alto && y < 10; y++) {
         for (int x = 0; x < info->ancho; x++) {
             if (info->canales == 1) {
-                printf("%3u ", info->pixeles[y][x][0]); // Escala de grises
+                printf("%3u ", info->pixeles[y][x][0]);
             } else {
                 printf("(%3u,%3u,%3u) ", info->pixeles[y][x][0], info->pixeles[y][x][1],
-                       info->pixeles[y][x][2]); // RGB
+                       info->pixeles[y][x][2]);
             }
         }
         printf("\n");
@@ -139,18 +112,11 @@ void mostrarMatriz(const ImagenInfo* info) {
     }
 }
 
-// QUÉ: Guardar la matriz como PNG (grises o RGB).
-// CÓMO: Aplana la matriz 3D a 1D y usa stbi_write_png con el número de canales correcto.
-// POR QUÉ: Respeta el formato original (grises o RGB) para consistencia.
 int guardarPNG(const ImagenInfo* info, const char* rutaSalida) {
     if (!info->pixeles) {
         fprintf(stderr, "No hay imagen para guardar.\n");
         return 0;
     }
-
-    // QUÉ: Aplanar matriz 3D a 1D para stb.
-    // CÓMO: Copia píxeles en orden [y][x][c] a un arreglo plano.
-    // POR QUÉ: stb_write_png requiere datos contiguos.
     unsigned char* datos1D = (unsigned char*)malloc(info->ancho * info->alto * info->canales);
     if (!datos1D) {
         fprintf(stderr, "Error de memoria al aplanar imagen\n");
@@ -163,10 +129,6 @@ int guardarPNG(const ImagenInfo* info, const char* rutaSalida) {
             }
         }
     }
-
-    // QUÉ: Guardar como PNG.
-    // CÓMO: Usa stbi_write_png con los canales de la imagen original.
-    // POR QUÉ: Mantiene el formato (grises o RGB) de la entrada.
     int resultado = stbi_write_png(rutaSalida, info->ancho, info->alto, info->canales,
                                    datos1D, info->ancho * info->canales);
     free(datos1D);
@@ -180,9 +142,6 @@ int guardarPNG(const ImagenInfo* info, const char* rutaSalida) {
     }
 }
 
-// QUÉ: Estructura para pasar datos al hilo de ajuste de brillo.
-// CÓMO: Contiene matriz, rango de filas, ancho, canales y delta de brillo.
-// POR QUÉ: Los hilos necesitan datos específicos para procesar en paralelo.
 typedef struct {
     unsigned char*** pixeles;
     int inicio;
@@ -192,9 +151,6 @@ typedef struct {
     int delta;
 } BrilloArgs;
 
-// QUÉ: Ajustar brillo en un rango de filas (para hilos).
-// CÓMO: Suma delta a cada canal de cada píxel, con clamp entre 0-255.
-// POR QUÉ: Procesa píxeles en paralelo para demostrar concurrencia.
 void* ajustarBrilloHilo(void* args) {
     BrilloArgs* bArgs = (BrilloArgs*)args;
     for (int y = bArgs->inicio; y < bArgs->fin; y++) {
@@ -209,23 +165,16 @@ void* ajustarBrilloHilo(void* args) {
     return NULL;
 }
 
-// QUÉ: Ajustar brillo de la imagen usando múltiples hilos.
-// CÓMO: Divide las filas entre 2 hilos, pasa argumentos y espera con join.
-// POR QUÉ: Usa concurrencia para acelerar el procesamiento y enseñar hilos.
 void ajustarBrilloConcurrente(ImagenInfo* info, int delta) {
     if (!info->pixeles) {
         printf("No hay imagen cargada.\n");
         return;
     }
-
-    const int numHilos = 2; // QUÉ: Número fijo de hilos para simplicidad.
+    const int numHilos = 2;
     pthread_t hilos[numHilos];
     BrilloArgs args[numHilos];
     int filasPorHilo = (int)ceil((double)info->alto / numHilos);
 
-    // QUÉ: Configurar y lanzar hilos.
-    // CÓMO: Asigna rangos de filas a cada hilo y pasa datos.
-    // POR QUÉ: Divide el trabajo para procesar en paralelo.
     for (int i = 0; i < numHilos; i++) {
         args[i].pixeles = info->pixeles;
         args[i].inicio = i * filasPorHilo;
@@ -233,15 +182,8 @@ void ajustarBrilloConcurrente(ImagenInfo* info, int delta) {
         args[i].ancho = info->ancho;
         args[i].canales = info->canales;
         args[i].delta = delta;
-        if (pthread_create(&hilos[i], NULL, ajustarBrilloHilo, &args[i]) != 0) {
-            fprintf(stderr, "Error al crear hilo %d\n", i);
-            return;
-        }
+        pthread_create(&hilos[i], NULL, ajustarBrilloHilo, &args[i]);
     }
-
-    // QUÉ: Esperar a que los hilos terminen.
-    // CÓMO: Usa pthread_join para sincronizar.
-    // POR QUÉ: Garantiza que todos los píxeles se procesen antes de continuar.
     for (int i = 0; i < numHilos; i++) {
         pthread_join(hilos[i], NULL);
     }
@@ -249,29 +191,269 @@ void ajustarBrilloConcurrente(ImagenInfo* info, int delta) {
            info->canales == 1 ? "grises" : "RGB");
 }
 
-// QUÉ: Mostrar el menú interactivo.
-// CÓMO: Imprime opciones y espera entrada del usuario.
-// POR QUÉ: Proporciona una interfaz simple para interactuar con el programa.
+/* funcion para convolución*/
+typedef struct {
+    unsigned char*** src;
+    unsigned char*** dst;
+    int inicio, fin, ancho, alto, canales;
+} ConvolArgs;
+
+void* aplicarConvolucionHilo(void* args) {
+    ConvolArgs* a = (ConvolArgs*)args;
+    int kernel[3][3] = {{1,1,1},{1,1,1},{1,1,1}};
+    int factor = 9;
+    for (int y = a->inicio; y < a->fin; y++) {
+        for (int x = 0; x < a->ancho; x++) {
+            for (int c = 0; c < a->canales; c++) {
+                int suma = 0;
+                for (int ky = -1; ky <= 1; ky++) {
+                    for (int kx = -1; kx <= 1; kx++) {
+                        int ny = y + ky, nx = x + kx;
+                        if (ny < 0) ny = 0;
+                        if (nx < 0) nx = 0;
+                        if (ny >= a->alto) ny = a->alto - 1;
+                        if (nx >= a->ancho) nx = a->ancho - 1;
+                        suma += a->src[ny][nx][c] * kernel[ky+1][kx+1];
+                    }
+                }
+                a->dst[y][x][c] = (unsigned char)(suma / factor);
+            }
+        }
+    }
+    return NULL;
+}
+
+void aplicarConvolucion(ImagenInfo* info) {
+    if (!info->pixeles) { printf("No hay imagen cargada.\n"); return; }
+    unsigned char*** dst = (unsigned char***)malloc(info->alto * sizeof(unsigned char**));
+    for (int y = 0; y < info->alto; y++) {
+        dst[y] = (unsigned char**)malloc(info->ancho * sizeof(unsigned char*));
+        for (int x = 0; x < info->ancho; x++) {
+            dst[y][x] = (unsigned char*)malloc(info->canales * sizeof(unsigned char));
+        }
+    }
+    int numHilos = 2;
+    pthread_t hilos[numHilos];
+    ConvolArgs args[numHilos];
+    int filasPorHilo = (info->alto + numHilos - 1) / numHilos;
+    for (int i = 0; i < numHilos; i++) {
+        args[i] = (ConvolArgs){info->pixeles, dst, i*filasPorHilo,
+                               (i+1)*filasPorHilo < info->alto ? (i+1)*filasPorHilo : info->alto,
+                               info->ancho, info->alto, info->canales};
+        pthread_create(&hilos[i], NULL, aplicarConvolucionHilo, &args[i]);
+    }
+    for (int i = 0; i < numHilos; i++) pthread_join(hilos[i], NULL);
+
+    int canales_prev = info->canales;
+    int ancho_prev   = info->ancho;     
+    int alto_prev    = info->alto;      
+
+    liberarImagen(info);
+    info->pixeles = dst;
+    info->ancho   = ancho_prev;
+    info->alto    = alto_prev;
+    info->canales = canales_prev;       
+    printf("Convolución aplicada.\n");
+}
+
+/*funcion de rotacion a 90°*/
+typedef struct {
+    unsigned char*** src;
+    unsigned char*** dst;
+    int inicio, fin, ancho, alto, canales;
+} RotarArgs;
+
+void* rotar90Hilo(void* args) {
+    RotarArgs* a = (RotarArgs*)args;
+    for (int y = a->inicio; y < a->fin; y++) {
+        for (int x = 0; x < a->ancho; x++) {
+            for (int c = 0; c < a->canales; c++) {
+                a->dst[x][a->alto - 1 - y][c] = a->src[y][x][c];
+            }
+        }
+    }
+    return NULL;
+}
+
+void rotar90(ImagenInfo* info) {
+    if (!info->pixeles) { printf("No hay imagen cargada.\n"); return; }
+    unsigned char*** dst = (unsigned char***)malloc(info->ancho * sizeof(unsigned char**));
+    for (int y = 0; y < info->ancho; y++) {
+        dst[y] = (unsigned char**)malloc(info->alto * sizeof(unsigned char*));
+        for (int x = 0; x < info->alto; x++) {
+            dst[y][x] = (unsigned char*)malloc(info->canales * sizeof(unsigned char));
+        }
+    }
+
+    int numHilos = 2;
+    pthread_t hilos[numHilos];
+    RotarArgs args[numHilos];
+    int filasPorHilo = (info->alto + numHilos - 1) / numHilos;
+    for (int i = 0; i < numHilos; i++) {
+        args[i] = (RotarArgs){info->pixeles, dst, i*filasPorHilo,
+                              (i+1)*filasPorHilo < info->alto ? (i+1)*filasPorHilo : info->alto,
+                              info->ancho, info->alto, info->canales};
+        pthread_create(&hilos[i], NULL, rotar90Hilo, &args[i]);
+    }
+
+    for (int i = 0; i < numHilos; i++) pthread_join(hilos[i], NULL);
+
+    int prev_ancho   = info->ancho;   
+    int prev_alto    = info->alto;    
+    int prev_canales = info->canales; 
+
+    liberarImagen(info);                
+
+    info->pixeles = dst;
+    info->ancho   = prev_alto;          
+    info->alto    = prev_ancho;     
+    info->canales = prev_canales;
+
+    printf("Imagen rotada 90°.\n");
+}
+
+/*funcion para detectar bordes con sobel*/
+typedef struct {
+    unsigned char*** src;
+    unsigned char*** dst;
+    int inicio, fin, ancho, alto, canales;
+} SobelArgs;
+
+void* sobelHilo(void* args) {
+    SobelArgs* a = (SobelArgs*)args;
+    int Gx[3][3] = {{-1,0,1},{-2,0,2},{-1,0,1}};
+    int Gy[3][3] = {{-1,-2,-1},{0,0,0},{1,2,1}};
+    for (int y = a->inicio; y < a->fin; y++) {
+        for (int x = 0; x < a->ancho; x++) {
+            int sumX = 0, sumY = 0;
+            for (int ky = -1; ky <= 1; ky++) {
+                for (int kx = -1; kx <= 1; kx++) {
+                    int ny = y+ky, nx = x+kx;
+                    if (ny < 0 || ny >= a->alto || nx < 0 || nx >= a->ancho) continue;
+                    int val;
+                    if (a->canales == 1) val = a->src[ny][nx][0];
+                    else val = (a->src[ny][nx][0]+a->src[ny][nx][1]+a->src[ny][nx][2])/3;
+                    sumX += val * Gx[ky+1][kx+1];
+                    sumY += val * Gy[ky+1][kx+1];
+                }
+            }
+            int mag = (int)sqrt(sumX*sumX + sumY*sumY);
+            if (mag > 255) mag = 255;
+            if (mag < 0) mag = 0;
+            a->dst[y][x][0] = (unsigned char)mag;
+        }
+    }
+    return NULL;
+}
+
+void aplicarSobel(ImagenInfo* info) {
+    if (!info->pixeles) { printf("No hay imagen cargada.\n"); return; }
+    unsigned char*** dst = (unsigned char***)malloc(info->alto * sizeof(unsigned char**));
+    for (int y = 0; y < info->alto; y++) {
+        dst[y] = (unsigned char**)malloc(info->ancho * sizeof(unsigned char*));
+        for (int x = 0; x < info->ancho; x++) {
+            dst[y][x] = (unsigned char*)malloc(sizeof(unsigned char));
+        }
+    }
+
+    int numHilos = 2;
+    pthread_t hilos[numHilos];
+    SobelArgs args[numHilos];
+    int filasPorHilo = (info->alto + numHilos - 1) / numHilos;
+    for (int i = 0; i < numHilos; i++) {
+        args[i] = (SobelArgs){info->pixeles, dst, i*filasPorHilo,
+                              (i+1)*filasPorHilo < info->alto ? (i+1)*filasPorHilo : info->alto,
+                              info->ancho, info->alto, info->canales};
+        pthread_create(&hilos[i], NULL, sobelHilo, &args[i]);
+    }
+    for (int i = 0; i < numHilos; i++) pthread_join(hilos[i], NULL);
+
+    int prev_ancho = info->ancho;      
+    int prev_alto  = info->alto;       
+
+    liberarImagen(info);               
+    info->pixeles = dst;
+    info->ancho   = prev_ancho;
+    info->alto    = prev_alto; 
+    info->canales = 1;         
+
+    printf("Detección de bordes aplicada.\n");
+}
+
+/*funcion de escalado de imagen*/
+
+typedef struct {
+    unsigned char*** src;
+    unsigned char*** dst;
+    int inicio, fin, ancho, alto, nuevoAncho, nuevoAlto, canales;
+} EscalarArgs;
+
+void* escalarHilo(void* args) {
+    EscalarArgs* a = (EscalarArgs*)args;
+    for (int y = a->inicio; y < a->fin; y++) {
+        for (int x = 0; x < a->nuevoAncho; x++) {
+            int srcX = x * a->ancho / a->nuevoAncho;
+            int srcY = y * a->alto / a->nuevoAlto;
+            for (int c = 0; c < a->canales; c++) {
+                a->dst[y][x][c] = a->src[srcY][srcX][c];
+            }
+        }
+    }
+    return NULL;
+}
+
+void escalarImagen(ImagenInfo* info, int nuevoAncho, int nuevoAlto) {
+    if (!info->pixeles) { printf("No hay imagen cargada.\n"); return; }
+    unsigned char*** dst = (unsigned char***)malloc(nuevoAlto * sizeof(unsigned char**));
+    for (int y = 0; y < nuevoAlto; y++) {
+        dst[y] = (unsigned char**)malloc(nuevoAncho * sizeof(unsigned char*));
+        for (int x = 0; x < nuevoAncho; x++) {
+            dst[y][x] = (unsigned char*)malloc(info->canales * sizeof(unsigned char));
+        }
+    }
+
+    int numHilos = 2;
+    pthread_t hilos[numHilos];
+    EscalarArgs args[numHilos];
+    int filasPorHilo = (nuevoAlto + numHilos - 1) / numHilos;
+    for (int i = 0; i < numHilos; i++) {
+        args[i] = (EscalarArgs){info->pixeles, dst, i*filasPorHilo,
+                                (i+1)*filasPorHilo < nuevoAlto ? (i+1)*filasPorHilo : nuevoAlto,
+                                info->ancho, info->alto, nuevoAncho, nuevoAlto, info->canales};
+        pthread_create(&hilos[i], NULL, escalarHilo, &args[i]);
+    }
+    for (int i = 0; i < numHilos; i++) pthread_join(hilos[i], NULL);
+
+    int canales_prev = info->canales;
+
+    liberarImagen(info);
+    info->pixeles = dst;
+    info->ancho   = nuevoAncho;
+    info->alto    = nuevoAlto;
+    info->canales = canales_prev;
+
+    printf("Imagen escalada a %dx%d.\n", nuevoAncho, nuevoAlto);
+}
+
+
 void mostrarMenu() {
     printf("\n--- Plataforma de Edición de Imágenes ---\n");
     printf("1. Cargar imagen PNG\n");
     printf("2. Mostrar matriz de píxeles\n");
     printf("3. Guardar como PNG\n");
     printf("4. Ajustar brillo (+/- valor) concurrentemente\n");
-    printf("5. Salir\n");
+    printf("5. Aplicar convolución (blur)\n");
+    printf("6. Rotar imagen 90°\n");
+    printf("7. Detección de bordes (Sobel)\n");
+    printf("8. Escalar imagen\n");
+    printf("9. Salir\n");
     printf("Opción: ");
 }
 
-// QUÉ: Función principal que controla el flujo del programa.
-// CÓMO: Maneja entrada CLI, ejecuta el menú en bucle y llama funciones según opción.
-// POR QUÉ: Centraliza la lógica y asegura limpieza al salir.
 int main(int argc, char* argv[]) {
-    ImagenInfo imagen = {0, 0, 0, NULL}; // Inicializar estructura
-    char ruta[256] = {0}; // Buffer para ruta de archivo
+    ImagenInfo imagen = {0, 0, 0, NULL};
+    char ruta[256] = {0};
 
-    // QUÉ: Cargar imagen desde CLI si se pasa.
-    // CÓMO: Copia argv[1] y llama cargarImagen.
-    // POR QUÉ: Permite ejecución directa con ./img imagen.png.
     if (argc > 1) {
         strncpy(ruta, argv[1], sizeof(ruta) - 1);
         if (!cargarImagen(ruta, &imagen)) {
@@ -282,34 +464,29 @@ int main(int argc, char* argv[]) {
     int opcion;
     while (1) {
         mostrarMenu();
-        // QUÉ: Leer opción del usuario.
-        // CÓMO: Usa scanf y limpia el buffer para evitar bucles infinitos.
-        // POR QUÉ: Manejo robusto de entrada evita errores comunes.
         if (scanf("%d", &opcion) != 1) {
             while (getchar() != '\n');
             printf("Entrada inválida.\n");
             continue;
         }
-        while (getchar() != '\n'); // Limpiar buffer
+        while (getchar() != '\n');
 
         switch (opcion) {
-            case 1: { // Cargar imagen
+            case 1: {
                 printf("Ingresa la ruta del archivo PNG: ");
                 if (fgets(ruta, sizeof(ruta), stdin) == NULL) {
                     printf("Error al leer ruta.\n");
                     continue;
                 }
-                ruta[strcspn(ruta, "\n")] = 0; // Eliminar salto de línea
-                liberarImagen(&imagen); // Liberar imagen previa
-                if (!cargarImagen(ruta, &imagen)) {
-                    continue;
-                }
+                ruta[strcspn(ruta, "\n")] = 0;
+                liberarImagen(&imagen);
+                if (!cargarImagen(ruta, &imagen)) continue;
                 break;
             }
-            case 2: // Mostrar matriz
+            case 2:
                 mostrarMatriz(&imagen);
                 break;
-            case 3: { // Guardar PNG
+            case 3: {
                 char salida[256];
                 printf("Nombre del archivo PNG de salida: ");
                 if (fgets(salida, sizeof(salida), stdin) == NULL) {
@@ -320,9 +497,9 @@ int main(int argc, char* argv[]) {
                 guardarPNG(&imagen, salida);
                 break;
             }
-            case 4: { // Ajustar brillo
+            case 4: {
                 int delta;
-                printf("Valor de ajuste de brillo (+ para más claro, - para más oscuro): ");
+                printf("Valor de ajuste de brillo: ");
                 if (scanf("%d", &delta) != 1) {
                     while (getchar() != '\n');
                     printf("Entrada inválida.\n");
@@ -332,7 +509,24 @@ int main(int argc, char* argv[]) {
                 ajustarBrilloConcurrente(&imagen, delta);
                 break;
             }
-            case 5: // Salir
+            case 5:
+                aplicarConvolucion(&imagen);
+                break;
+            case 6:
+                rotar90(&imagen);
+                break;
+            case 7:
+                aplicarSobel(&imagen);
+                break;
+            case 8: {
+                int nuevoAncho, nuevoAlto;
+                printf("Nuevo ancho: "); scanf("%d", &nuevoAncho);
+                printf("Nuevo alto: "); scanf("%d", &nuevoAlto);
+                while (getchar() != '\n');
+                escalarImagen(&imagen, nuevoAncho, nuevoAlto);
+                break;
+            }
+            case 9:
                 liberarImagen(&imagen);
                 printf("¡Adiós!\n");
                 return EXIT_SUCCESS;
