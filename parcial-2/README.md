@@ -1,27 +1,23 @@
 
 ## Convolución
 
-![[Pasted image 20251006160159.png]]
+<img width="1537" height="992" alt="blurred" src="https://github.com/user-attachments/assets/389ca0eb-bdf6-413f-b646-8d27870eb47a" />
 
 ## Rotación
 
-![[Pasted image 20251006160303.png]]
+<img width="1547" height="1035" alt="rotada" src="https://github.com/user-attachments/assets/878f5bd8-b660-4812-bd6b-97f9f0fb4e40" />
 
 ## Detección de bordes (Operador Sobel)
 
-![[Pasted image 20251006160412.png]]
+<img width="1547" height="1031" alt="sobel" src="https://github.com/user-attachments/assets/73d2e280-23ae-461d-84fa-390d4776ddd8" />
 
 ## Escalado
 
-Antes de escalarla sus dimensiones son 
+En el cuadrito rojo se ven las dimensiones de la imagen luego de modificarlas
 
-![[Pasted image 20251006160501.png]]
+<img width="1543" height="1029" alt="scaled" src="https://github.com/user-attachments/assets/b93ad0be-492b-41d1-bb76-dcef3ad9687e" />
 
-y despues de escalarla queda con dimensiones
-
-![[scaled.png]]
-
-----
+------
 
 ## Link del video 
 
